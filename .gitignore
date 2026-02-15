@@ -1,0 +1,61 @@
+# ----------------------------
+# Build directories (CMake)
+# ----------------------------
+build*/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+CTestTestfile.cmake
+Testing/
+*.ninja
+*.ninja_deps
+*.ninja_log
+*.vcxproj*
+*.sln
+*.dir/
+*.o
+*.obj
+
+# ----------------------------
+# Qt / Qt Creator generated
+# ----------------------------
+moc_*.cpp
+moc_*.h
+ui_*.h
+qrc_*.cpp
+*.moc
+
+# Qt Creator user/session files
+*.user
+*.user.*
+*.autosave
+
+# ----------------------------
+# OS / IDE junk
+# ----------------------------
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Visual Studio / MSVC
+.vs/
+*.pdb
+*.ilk
+*.tlog
+*.idb
+*.log
+
+# MinGW
+*.a
+*.dll
+*.exe
+
+# ----------------------------
+# Runtime artifacts
+# ----------------------------
+*.sqlite
+*.db
+*.rdb
