@@ -7,6 +7,28 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <QWidget>
+#include <QApplication>
+#include <QStyle>
+#include <QStyleOptionComboBox>
+#include <QPainter>
+#include <QColor>
+#include <QVariant>
+#include <QDebug>
+
+static QString penStyleToText(int v)
+{
+    // Qt::PenStyle значения — целые (enum)
+    // Основные стили:
+    switch (static_cast<Qt::PenStyle>(v)) {
+    case Qt::NoPen:          return "NoPen";
+    case Qt::SolidLine:      return "SolidLine";
+    case Qt::DashLine:       return "DashLine";
+    case Qt::DotLine:        return "DotLine";
+    case Qt::DashDotLine:    return "DashDotLine";
+    case Qt::DashDotDotLine: return "DashDotDotLine";
+    default:                 return QString("Style(%1)").arg(v);
+    }
+}
 
 /**
  * @brief Конструктор MyDelegate.
@@ -58,8 +80,8 @@ void MyDelegate::fillPenStyleCombo(QComboBox* combo)
  * @return Виджет-редактор.
  */
 QWidget* MyDelegate::createEditor(QWidget* parent,
-                                 const QStyleOptionViewItem& option,
-                                 const QModelIndex& index) const
+                                  const QStyleOptionViewItem& option,
+                                  const QModelIndex& index) const
 {
     // Если индекс неверный — делегируем базовому классу
     if (!index.isValid())
@@ -120,8 +142,8 @@ void MyDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
  * @param index Индекс ячейки.
  */
 void MyDelegate::setModelData(QWidget* editor,
-                             QAbstractItemModel* model,
-                             const QModelIndex& index) const
+                              QAbstractItemModel* model,
+                              const QModelIndex& index) const
 {
     if (!index.isValid() || index.column() != kPenStyleColumn)
     {
@@ -150,9 +172,9 @@ void MyDelegate::setModelData(QWidget* editor,
  * @return true, если событие обработано; иначе — результат базового класса.
  */
 bool MyDelegate::editorEvent(QEvent* event,
-                            QAbstractItemModel* model,
-                            const QStyleOptionViewItem& option,
-                            const QModelIndex& index)
+                             QAbstractItemModel* model,
+                             const QStyleOptionViewItem& option,
+                             const QModelIndex& index)
 {
     /**
      * Шаг 1. Ранний выход для всех случаев, которые нас не интересуют:
@@ -208,7 +230,7 @@ bool MyDelegate::editorEvent(QEvent* event,
      * В качестве “начального” цвета передаём текущий цвет, чтобы пользователь видел текущее значение.
      */
     const QColor selectedColor =
-        QColorDialog::getColor(currentColor, parentWidget, "Select pen color");
+            QColorDialog::getColor(currentColor, parentWidget, "Select pen color");
 
     /**
      * Шаг 7. Если диалог отменён (цвет невалидный) — считаем событие обработанным,
@@ -229,3 +251,31 @@ bool MyDelegate::editorEvent(QEvent* event,
     return true;
 }
 
+
+
+void MyDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    // колонка стиля пера = 2 (id=0, color=1, style=2)
+    if (index.column() == 2) {
+        const int style = index.data(Qt::EditRole).toInt(); // числовое значение (как и в методичке)
+        const QString text = penStyleToText(style);
+
+        QStyleOptionComboBox styleOptionCombo;
+        styleOptionCombo.rect = option.rect;
+        styleOptionCombo.currentText = text;
+
+        QApplication::style()->drawComplexControl(QStyle::CC_ComboBox,
+                                                  &styleOptionCombo,
+                                                  painter);
+        QApplication::style()->drawItemText(painter,
+                                            styleOptionCombo.rect,
+                                            Qt::AlignCenter,
+                                            QApplication::palette(),
+                                            true,
+                                            styleOptionCombo.currentText);
+        return;
+    }
+
+    // остальное — стандартная отрисовка
+    QStyledItemDelegate::paint(painter, option, index);
+}

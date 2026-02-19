@@ -148,6 +148,10 @@ private:
      * @param combo Указатель на QComboBox, который нужно заполнить.
      */
     static void fillPenStyleCombo(QComboBox* combo);
+
+    // QAbstractItemDelegate interface
+public:
+    virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 };
 
 #endif // MYDELEGATE_H
