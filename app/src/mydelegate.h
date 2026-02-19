@@ -128,14 +128,14 @@ private:
      *
      * @warning Должен совпадать с MyModel::Column::PenColor.
      */
-    static constexpr int kPenColorColumn = 0;
+    static constexpr int kPenColorColumn = 1;
 
     /**
      * @brief Номер столбца "стиль пера".
      *
      * @warning Должен совпадать с MyModel::Column::PenStyle.
      */
-    static constexpr int kPenStyleColumn = 1;
+    static constexpr int kPenStyleColumn = 2;
 
 private:
     /**

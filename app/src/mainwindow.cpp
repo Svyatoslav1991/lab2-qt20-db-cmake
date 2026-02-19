@@ -330,9 +330,8 @@ void MainWindow::onInitTableModel() {
     ui->tableView->hideColumn(0);
 
     // делегаты (ВАЖНО: индексы смещены на +1 из-за id)
-    auto* d = new MyDelegate(this);
-    ui->tableView->setItemDelegateForColumn(1, d);
-    ui->tableView->setItemDelegateForColumn(2, d);
+    ui->tableView->setItemDelegateForColumn(1, new MyDelegate(this));
+    ui->tableView->setItemDelegateForColumn(2, new MyDelegate(this));
 
     ui->tableView->resizeColumnsToContents();
 

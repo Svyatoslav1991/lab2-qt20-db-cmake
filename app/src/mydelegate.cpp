@@ -255,8 +255,7 @@ bool MyDelegate::editorEvent(QEvent* event,
 
 void MyDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    // колонка стиля пера = 2 (id=0, color=1, style=2)
-    if (index.column() == 2) {
+    if (index.column() == kPenStyleColumn) {
         const int style = index.data(Qt::EditRole).toInt(); // числовое значение (как и в методичке)
         const QString text = penStyleToText(style);
 
