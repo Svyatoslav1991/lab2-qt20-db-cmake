@@ -1,18 +1,19 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QMenuBar>
-#include <QMenu>
+// Реализация MainWindow: меню + операции с SQLite (QtSql) + отображение через QSqlTableModel.
+
 #include <QAction>
 #include <QDebug>
+#include <QMenu>
+#include <QMenuBar>
 
-#include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
+#include <QtSql/QSqlQuery>
 #include <QtSql/QSqlRecord>
 
-// MyRect из ЛР1 (лежит у тебя в app/include)
-#include "myrect.h"
 #include "mydelegate.h"
+#include "myrect.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -29,6 +30,12 @@ MainWindow::~MainWindow()
 
 // -------------------- helpers --------------------
 
+/**
+ * @brief Проверяет, что соединение с БД создано и открыто.
+ *
+ * Используется как “guard” в публичных слотах, чтобы не падать и не выполнять SQL,
+ * когда пользователь ещё не вызвал Create connection или уже закрыл соединение.
+ */
 bool MainWindow::ensureDbOpen_(const char* caller) const
 {
     if (!m_db.isValid()) {
@@ -44,6 +51,12 @@ bool MainWindow::ensureDbOpen_(const char* caller) const
 
 // -------------------- BD --------------------
 
+/**
+ * @brief Создаёт/переиспользует именованное соединение с SQLite и открывает его.
+ *
+ * @note Если соединение с таким именем уже зарегистрировано, берём его через database().
+ *       Иначе создаём новое через addDatabase().
+ */
 void MainWindow::onCreateConnection()
 {
     // Создаём/переиспользуем именованное соединение
@@ -347,7 +360,7 @@ void MainWindow::onInsertRow()      {
     }
 
     const int row = m_model->rowCount(); // куда вставляем (в конец)
-    if (!m_model->insertRows(row, 1)) {  // insertRows(row, count) ([doc.qt.io](https://doc.qt.io/qt-5/qsqltablemodel.html?utm_source=chatgpt.com))
+    if (!m_model->insertRows(row, 1)) {  // insertRows(row, count) — добавление строк в модель.
         qDebug() << "onInsertRow: insertRows failed:" << m_model->lastError().text();
         return;
     }
