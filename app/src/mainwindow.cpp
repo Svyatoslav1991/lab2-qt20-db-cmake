@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setWindowTitle("lab2-qt20-db");
     setupMenus_();
 }
 
