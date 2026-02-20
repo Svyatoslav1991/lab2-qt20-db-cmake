@@ -1,13 +1,19 @@
 find_package(Qt5 REQUIRED COMPONENTS Test Core Widgets Sql)
 
 function(add_qt_test target_name)
-    add_executable(${target_name} ${ARGN})
+    add_executable(${target_name}
+        ${ARGN}
+    )
 
     set_target_properties(${target_name} PROPERTIES
         AUTOMOC ON
         AUTOUIC OFF
         AUTORCC OFF
-        WIN32_EXECUTABLE FALSE
+        WIN32_EXECUTABLE OFF
+    )
+
+    target_link_options(${target_name} PRIVATE
+        $<$<CXX_COMPILER_ID:GNU>:-mconsole>
     )
 
     target_link_libraries(${target_name}
@@ -29,6 +35,8 @@ function(add_qt_test target_name)
     add_test(NAME ${target_name} COMMAND ${target_name})
 endfunction()
 
+# -------------------- tests --------------------
+
 add_qt_test(test_smoke
     test_smoke.cpp
 )
@@ -40,5 +48,3 @@ add_qt_test(test_mydelegate
 add_qt_test(test_mainwindow
     test_mainwindow.cpp
 )
-
-

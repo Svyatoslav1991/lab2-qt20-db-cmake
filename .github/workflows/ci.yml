@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  build-and-test-windows:
+    runs-on: windows-latest
+
+    env:
+      BUILD_TYPE: Debug
+      QT_VERSION: 5.15.2
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v5
+
+      - name: Install Qt 5
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.QT_VERSION }}
+          arch: win64_mingw81
+          cache: true
+
+      - name: Configure (CMake + Ninja)
+        shell: pwsh
+        run: |
+          cmake -S . -B build `
+            -G Ninja `
+            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} `
+            -DBUILD_TESTING=ON
+
+      - name: Build
+        shell: pwsh
+        run: cmake --build build --config ${{ env.BUILD_TYPE }}
+
+      - name: Run tests
+        shell: pwsh
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: ctest --test-dir build --output-on-failure -C ${{ env.BUILD_TYPE }}
