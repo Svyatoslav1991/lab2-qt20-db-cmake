@@ -59,3 +59,9 @@ Desktop.ini
 *.sqlite
 *.db
 *.rdb
+
+# Qt Creator user-specific project files
+*.pro.user
+*.pro.user.*
+CMakeLists.txt.user
+CMakeLists.txt.user.*
